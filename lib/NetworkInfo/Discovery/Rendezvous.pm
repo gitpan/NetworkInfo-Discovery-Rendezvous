@@ -5,7 +5,7 @@ use Net::Rendezvous;
 use NetworkInfo::Discovery::Detect;
 
 { no strict;
-  $VERSION = '0.03';
+  $VERSION = '0.04';
   @ISA = qw(NetworkInfo::Discovery::Detect);
 }
 
@@ -15,7 +15,7 @@ NetworkInfo::Discovery::Rendezvous - NetworkInfo::Discovery extension to find Re
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =head1 SYNOPSIS
 
@@ -104,14 +104,11 @@ sub do_it {
     
     for my $domain (@{$self->{_domains_to_scan}}) {
         # first, try to find all registered services in the domain
-        my $services = undef;
-        eval {
-            $services = Net::Rendezvous->enumerate_services;
-        };
+        my @services = Net::Rendezvous->all_services;
         
         # if services enumeration worked, try to find all instances of each service
-        if(defined $services and $services->entries) {
-            for my $service ($services->entries) {
+        if(@services) {
+            for my $service (@services) {
                 $self->discover_service($service->name, $service->protocol, $domain)
             }
         

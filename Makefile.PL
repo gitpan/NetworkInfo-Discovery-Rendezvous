@@ -9,8 +9,8 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Carp' => 0,
-        'NetworkInfo::Discovery' => 0.12, 
-        'Net::Rendezvous' => 0.86, 
+        'NetworkInfo::Discovery' => '0.12', 
+        'Net::Rendezvous' => '0.90', 
         'Test::More' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

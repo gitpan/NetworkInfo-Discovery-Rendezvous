@@ -8,8 +8,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/NetworkInfo/Discovery/Rendezvous.pm',
     requires => {
         'Carp' => 0,
-        'NetworkInfo::Discovery' => 0.12, 
-        'Net::Rendezvous' => 0.86, 
+        'NetworkInfo::Discovery' => '0.12', 
+        'Net::Rendezvous' => '0.90', 
         'Test::More' => 0,
     },
     add_to_cleanup      => [ 'NetworkInfo-Discovery-Rendezvous-*' ],

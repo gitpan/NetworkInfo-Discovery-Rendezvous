@@ -1,5 +1,9 @@
 Revision history for NetworkInfo-Discovery-Rendezvous
 
+0.04    2004.12.30
+        Updated to follow Net::Rendezvous 0.90 API. 
+        Added t/00prereq.t
+
 0.03    2004.11.16
         Wrote the README.
         Added tests to t/00load.t

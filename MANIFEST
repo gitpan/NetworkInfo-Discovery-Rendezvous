@@ -10,6 +10,7 @@ LICENSE.GPL
 lib/NetworkInfo/Discovery/Rendezvous.pm
 eg/rvdisc.pl
 t/00load.t
+t/00prereq.t
 t/01api.t
 t/10domain.t
 t/20rendezvous.t
