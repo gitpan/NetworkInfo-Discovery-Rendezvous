@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: NetworkInfo-Discovery-Rendezvous
-version: 0.04
+version: 0.05
 author:
   - |-
     Sébastien Aperghis-Tramoni <sebastien@aperghis.net>
@@ -15,5 +15,5 @@ requires:
 provides:
   NetworkInfo::Discovery::Rendezvous:
     file: lib/NetworkInfo/Discovery/Rendezvous.pm
-    version: 0.04
+    version: 0.05
 generated_by: Module::Build version 0.2607

@@ -1,12 +1,25 @@
 use strict;
 use Test::More;
+use Net::DNS;
 use NetworkInfo::Discovery::Rendezvous;
+
+my $obj = undef;
+my $domain = 'zeroconf.org';
+my $domain_addr = '';
+my @hosts = ();
 
 # First, try to check whether we are connected to the Internet.
 eval q{
-    use LWP::Simple;
-    unless(get('http://www.zeroconf.org/')) {
-        plan skip_all => "Not connected to the Internet."
+    my $resolver = Net::DNS::Resolver->new;
+    my $query = $resolver->search($domain);
+
+    if ($query) {
+        for my $rr ($query->answer) {
+            next unless $rr->type eq 'A';
+            $domain_addr = $rr->address and last;
+        }
+    } else {
+        plan skip_all => "Can't resolve '$domain'. Can't execute the tests.";
     }
 };
 plan 'no_plan';
@@ -29,10 +42,6 @@ plan 'no_plan';
 #    on the same network printer
 #  - Rose, which is the SSH access of the printer server
 
-my $obj = undef;
-my $domain = 'zeroconf.org';
-my @hosts = ();
-
 # checking by making request on zeroconf.org
 $obj = new NetworkInfo::Discovery::Rendezvous domain => $domain;
 ok( defined $obj                                        );  #01
@@ -46,7 +55,7 @@ for my $host (@hosts) {
     next unless $host->{ip};
     
     if($host->{nodename} eq 'Sales') {
-        is( $host->{ip}, '68.122.232.34' );
+        is( $host->{ip}, $domain_addr );
         
         if($host->{services}[0]{name} eq 'ipp') {
             is( $host->{services}[0]{port}, '49152' );
@@ -65,7 +74,7 @@ for my $host (@hosts) {
         }
     }
     if($host->{nodename} eq 'Marketing') {
-        is( $host->{ip}, '68.122.232.34' );
+        is( $host->{ip}, $domain_addr );
         
         if($host->{services}[0]{name} eq 'ipp') {
             is( $host->{services}[0]{port}, '49153' );
@@ -84,7 +93,7 @@ for my $host (@hosts) {
         }
     }
     if($host->{nodename} eq 'Engineering') {
-        is( $host->{ip}, '68.122.232.34' );
+        is( $host->{ip}, $domain_addr );
         
         if($host->{services}[0]{name} eq 'ipp') {
             is( $host->{services}[0]{port}, '49156' );
@@ -103,7 +112,7 @@ for my $host (@hosts) {
         }
     }
     if($host->{nodename} eq 'Rose') {
-        is( $host->{ip}, '68.122.232.34' );
+        is( $host->{ip}, $domain_addr );
         
         if($host->{services}[0]{name} eq 'ssh') {
             is( $host->{services}[0]{port}, '22' );

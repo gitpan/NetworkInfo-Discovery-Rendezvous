@@ -5,7 +5,7 @@ use Net::Rendezvous;
 use NetworkInfo::Discovery::Detect;
 
 { no strict;
-  $VERSION = '0.04';
+  $VERSION = '0.05';
   @ISA = qw(NetworkInfo::Discovery::Detect);
 }
 
@@ -15,7 +15,7 @@ NetworkInfo::Discovery::Rendezvous - NetworkInfo::Discovery extension to find Re
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =head1 SYNOPSIS
 
