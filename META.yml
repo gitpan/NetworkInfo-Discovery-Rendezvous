@@ -1,18 +1,19 @@
 --- #YAML:1.0
 name: NetworkInfo-Discovery-Rendezvous
-version: 0.01
-author: |-
-  Sébastien Aperghis-Tramoni <sebastien@aperghis.net>
+version: 0.02
+author:
+  - |-
+    Sébastien Aperghis-Tramoni <sebastien@aperghis.net>
 abstract: |-
   NetworkInfo::Discovery extension to find Rendezvous services
 license: perl
 requires:
   Carp: 0
-  Net::Rendezvous: 0.85
+  Net::Rendezvous: 0.86
   NetworkInfo::Discovery: 0.12
   Test::More: 0
 provides:
   NetworkInfo::Discovery::Rendezvous:
     file: lib/NetworkInfo/Discovery/Rendezvous.pm
-    version: 0.01
-generated_by: Module::Build version 0.25
+    version: 0.02
+generated_by: Module::Build version 0.26

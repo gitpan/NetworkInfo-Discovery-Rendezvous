@@ -1,5 +1,11 @@
 Revision history for NetworkInfo-Discovery-Rendezvous
 
-0.01    Date/time
+0.02    2004.10.18
+        Updated documentation with a link to Net::Rendezvous RT ticket. 
+        Improved t/20rendezvous.t so that it skips when not connected to the Internet. 
+        Added eg/rvdisc.pl
+        Added licenses texts. 
+
+0.01    2004.09.29
         First version, released on an unsuspecting world.
 

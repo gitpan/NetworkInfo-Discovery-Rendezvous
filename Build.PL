@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     requires => {
         'Carp' => 0,
         'NetworkInfo::Discovery' => 0.12, 
-        'Net::Rendezvous' => 0.85, 
+        'Net::Rendezvous' => 0.86, 
         'Test::More' => 0,
     },
     add_to_cleanup      => [ 'NetworkInfo-Discovery-Rendezvous-*' ],

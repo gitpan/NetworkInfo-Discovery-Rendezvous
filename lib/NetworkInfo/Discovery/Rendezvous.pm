@@ -5,7 +5,7 @@ use Net::Rendezvous;
 use NetworkInfo::Discovery::Detect;
 
 { no strict;
-  $VERSION = '0.01';
+  $VERSION = '0.02';
   @ISA = qw(NetworkInfo::Discovery::Detect);
 }
 
@@ -15,7 +15,7 @@ NetworkInfo::Discovery::Rendezvous - NetworkInfo::Discovery extension to find Re
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
@@ -23,8 +23,14 @@ Version 0.01
 
     my $scanner = new NetworkInfo::Discovery::Rendezvous domain => 'example.net';
     $scanner->do_it;
-    
-    
+
+    for my $host ($scanner->get_interfaces) {
+        printf "%s (%s)\n", $host->{nodename}, $host->{ip};
+
+        for my $service (@{$host->{services}}) {
+            printf "  %s (%s:%d)\n", $service->{name}, $service->{proto}
+        }
+    }
 
 =head1 DESCRIPTION
 
@@ -43,7 +49,8 @@ services like C<afpovertcp>.
 
 =item new()
 
-Create and return a new object. 
+Creates and returns a new C<NetworkInfo::Discovery::Rendezvous> object, which 
+derives from C<NetworkInfo::Discovery::Detect>. 
 
 B<Options>
 
@@ -57,10 +64,10 @@ C<domain> - expects a scalar or an arrayref of domains
 
 B<Example>
 
-    # with a scalar argument
+    # specify one domain
     my $scanner = new NetworkInfo::Discovery::Rendezvous domain => 'example.net';
 
-    # with an arrayref
+    # specify several domains
     my $scanner = new NetworkInfo::Discovery::Rendezvous domain => [ qw(local example.net) ];
 
 =cut
@@ -143,10 +150,10 @@ sub discover_service {
         #       service port: $entry->port
         #       service attr: $entry->all_attrs
         $self->add_interface({
-            ip => $entry->address, nodename => $entry->name, service => {
+            ip => $entry->address, nodename => $entry->name, services => [{
                 name => $service, port => $entry->port, proto => $proto, 
                 fqdn => $entry->fqdn, attrs => { $entry->all_attrs }
-            }
+            }]
         })
     }
 }
@@ -175,24 +182,31 @@ sub domain {
 
 =back
 
+=head1 CAVEATS
+
+Note that if you are using C<Net::Rendezvous> 0.86 or any previous version, you 
+won't find services as easily because it was lacking services enumeration. 
+Until a new version of C<Net::Rendezvous> is released, you can apply the patch 
+available at L<https://rt.cpan.org/Ticket/Display.html?id=7940>
+
 =head1 SEE ALSO
 
 L<NetworkInfo::Discovery>, L<Net::Rendezvous>
 
 =head1 AUTHOR
 
-Sébastien Aperghis-Tramoni, E<lt>sebastien@aperghis.netE<gt>
+SE<eacute>bastien Aperghis-Tramoni, E<lt>sebastien@aperghis.netE<gt>
 
 =head1 BUGS
 
 Please report any bugs or feature requests to
 C<bug-networkinfo-discovery-rendezvous@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org>.  I will be notified, and then you'll automatically
+L<https://rt.cpan.org/>.  I will be notified, and then you'll automatically
 be notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2004 Sébastien Aperghis-Tramoni, All Rights Reserved.
+Copyright 2004 SE<eacute>bastien Aperghis-Tramoni, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
