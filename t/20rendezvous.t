@@ -50,17 +50,17 @@ for my $host (@hosts) {
         
         if($host->{services}[0]{name} eq 'ipp') {
             is( $host->{services}[0]{port}, '49152' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Sales._ipp._tcp.zeroconf.org' );
         
         } elsif($host->{services}[0]{name} eq 'pdl-datastream') {
             is( $host->{services}[0]{port}, '49152' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Sales._pdl-datastream._tcp.zeroconf.org' );
         
         } elsif($host->{services}[0]{name} eq 'printer') {
             is( $host->{services}[0]{port}, '49152' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Sales._printer._tcp.zeroconf.org' );
         }
     }
@@ -69,17 +69,17 @@ for my $host (@hosts) {
         
         if($host->{services}[0]{name} eq 'ipp') {
             is( $host->{services}[0]{port}, '49153' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Marketing._ipp._tcp.zeroconf.org' );
         
         } elsif($host->{services}[0]{name} eq 'pdl-datastream') {
             is( $host->{services}[0]{port}, '49153' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Marketing._pdl-datastream._tcp.zeroconf.org' );
         
         } elsif($host->{services}[0]{name} eq 'printer') {
             is( $host->{services}[0]{port}, '49153' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Marketing._printer._tcp.zeroconf.org' );
         }
     }
@@ -88,17 +88,17 @@ for my $host (@hosts) {
         
         if($host->{services}[0]{name} eq 'ipp') {
             is( $host->{services}[0]{port}, '49156' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Engineering._ipp._tcp.zeroconf.org' );
         
         } elsif($host->{services}[0]{name} eq 'pdl-datastream') {
             is( $host->{services}[0]{port}, '49156' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Engineering._pdl-datastream._tcp.zeroconf.org' );
         
         } elsif($host->{services}[0]{name} eq 'printer') {
             is( $host->{services}[0]{port}, '49156' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Engineering._printer._tcp.zeroconf.org' );
         }
     }
@@ -107,7 +107,7 @@ for my $host (@hosts) {
         
         if($host->{services}[0]{name} eq 'ssh') {
             is( $host->{services}[0]{port}, '22' );
-            is( $host->{services}[0]{proto}, 'tcp' );
+            is( $host->{services}[0]{protocol}, 'tcp' );
             is( $host->{services}[0]{fqdn}, 'Engineering._ssh._tcp.zeroconf.org' );
         }
     }

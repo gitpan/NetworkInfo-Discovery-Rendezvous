@@ -1,5 +1,9 @@
 Revision history for NetworkInfo-Discovery-Rendezvous
 
+0.03    2004.11.16
+        Wrote the README.
+        Added tests to t/00load.t
+
 0.02    2004.10.18
         Updated documentation with a link to Net::Rendezvous RT ticket. 
         Improved t/20rendezvous.t so that it skips when not connected to the Internet. 

@@ -11,7 +11,7 @@ for my $host ($scanner->get_interfaces) {
     printf "%s (%s)\n", $host->{nodename}, $host->{ip};
     
     for my $service (@{$host->{services}}) {
-        printf "  %s (%s:%d) %s\n", $service->{name}, $service->{proto}, 
+        printf "  %s (%s:%d) %s\n", $service->{name}, $service->{protocol}, 
             $service->{port}, join(', ', 
                 map { $_ && $_.'='.$service->{attrs}{$_} } keys %{$service->{attrs}}
             ) || ''

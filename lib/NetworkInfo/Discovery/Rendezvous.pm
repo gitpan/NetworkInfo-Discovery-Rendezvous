@@ -5,7 +5,7 @@ use Net::Rendezvous;
 use NetworkInfo::Discovery::Detect;
 
 { no strict;
-  $VERSION = '0.02';
+  $VERSION = '0.03';
   @ISA = qw(NetworkInfo::Discovery::Detect);
 }
 
@@ -15,7 +15,7 @@ NetworkInfo::Discovery::Rendezvous - NetworkInfo::Discovery extension to find Re
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
@@ -28,9 +28,11 @@ Version 0.02
         printf "%s (%s)\n", $host->{nodename}, $host->{ip};
 
         for my $service (@{$host->{services}}) {
-            printf "  %s (%s:%d)\n", $service->{name}, $service->{proto}
+            printf "  %s (%s:%d)\n", $service->{name}, $service->{protocol}, $service->{port}
         }
     }
+
+See F<eg/rvdisc.pl> for a more complete example.
 
 =head1 DESCRIPTION
 
@@ -133,10 +135,10 @@ Discover instances of a given service.
 
 sub discover_service {
     my $self = shift;
-    my($service,$proto,$domain) = @_;
+    my($service,$protocol,$domain) = @_;
     
     my $rsrc = new Net::Rendezvous;
-    $rsrc->application($service, $proto);
+    $rsrc->application($service, $protocol);
     $rsrc->domain($domain);
     $rsrc->discover;
     
@@ -151,7 +153,7 @@ sub discover_service {
         #       service attr: $entry->all_attrs
         $self->add_interface({
             ip => $entry->address, nodename => $entry->name, services => [{
-                name => $service, port => $entry->port, proto => $proto, 
+                name => $service, port => $entry->port, protocol => $protocol, 
                 fqdn => $entry->fqdn, attrs => { $entry->all_attrs }
             }]
         })
