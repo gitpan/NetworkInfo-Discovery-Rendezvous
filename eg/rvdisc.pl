@@ -7,13 +7,13 @@ use NetworkInfo::Discovery::Rendezvous;
 my $scanner = new NetworkInfo::Discovery::Rendezvous domain => [ @ARGV ];
 $scanner->do_it;
 
-for my $host ($scanner->get_interfaces) {
-    printf "%s (%s)\n", $host->{nodename}, $host->{ip};
+for my $service (sort {$a->{name} cmp $b->{name}} $scanner->get_services) {
+    printf "--- %s ---\n", $service->{name};
     
-    for my $service (@{$host->{services}}) {
-        printf "  %s (%s:%d) %s\n", $service->{name}, $service->{protocol}, 
-            $service->{port}, join(', ', 
-                map { $_ && $_.'='.$service->{attrs}{$_} } keys %{$service->{attrs}}
+    for my $host (sort @{$service->{hosts}}) {
+        printf "  %s (%s:%s:%d)\n    %s\n", $host->{nodename}, $host->{ip}, 
+            $host->{services}[0]{protocol}, $host->{services}[0]{port}, join(', ', 
+                map { $_ && $_.'='.$host->{services}[0]{attrs}{$_} } keys %{$host->{services}[0]{attrs}}
             ) || ''
     }
 }

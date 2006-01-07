@@ -1,11 +1,13 @@
 package NetworkInfo::Discovery::Rendezvous;
 use strict;
 use Carp;
+use Encode;
 use Net::Rendezvous;
 use NetworkInfo::Discovery::Detect;
+#use Data::Dumper; $Data::Dumper::Indent = 0; $Data::Dumper::Terse = 1;
 
 { no strict;
-  $VERSION = '0.05';
+  $VERSION = '0.06';
   @ISA = qw(NetworkInfo::Discovery::Detect);
 }
 
@@ -15,7 +17,7 @@ NetworkInfo::Discovery::Rendezvous - NetworkInfo::Discovery extension to find Re
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =head1 SYNOPSIS
 
@@ -24,6 +26,7 @@ Version 0.05
     my $scanner = new NetworkInfo::Discovery::Rendezvous domain => 'example.net';
     $scanner->do_it;
 
+    # print the list of services sorted by host
     for my $host ($scanner->get_interfaces) {
         printf "%s (%s)\n", $host->{nodename}, $host->{ip};
 
@@ -32,7 +35,18 @@ Version 0.05
         }
     }
 
-See F<eg/rvdisc.pl> for a more complete example.
+    # print the list of services by service name
+    for my $service (sort {$a->{name} cmp $b->{name}} $scanner->get_services) {
+        printf "--- %s ---\n", $service->{name};
+
+        for my $host (sort @{$service->{hosts}}) {
+            printf "  %s (%s:%s:%d)\n    %s\n", $host->{nodename}, $host->{ip}, 
+                $host->{services}[0]{protocol}, $host->{services}[0]{port}
+        }
+    }
+
+
+See also F<eg/rvdisc.pl> for a more complete example.
 
 =head1 DESCRIPTION
 
@@ -49,10 +63,10 @@ services like C<afpovertcp>.
 
 =over 4
 
-=item new()
+=item B<new()>
 
-Creates and returns a new C<NetworkInfo::Discovery::Rendezvous> object, which 
-derives from C<NetworkInfo::Discovery::Detect>. 
+Creates and returns a new C<NetworkInfo::Discovery::Rendezvous> object, 
+which derives from C<NetworkInfo::Discovery::Detect>. 
 
 B<Options>
 
@@ -78,12 +92,13 @@ sub new {
     my $class = shift;
     my $self = $class->SUPER::new();
     my %args = @_;
+    #printf STDERR ">>> new(): args=(%s)\n", join ', ', map{Dumper($_)}@_;
     
     $class = ref($class) || $class;
     bless $self, $class;
     
     # add private fiels
-    $self->{_domains_to_scan} = [];
+    $self->{_domains_to_scan} ||= [];
     
     # treat given arguments
     for my $attr (keys %args) {
@@ -93,7 +108,7 @@ sub new {
     return $self
 }
 
-=item do_it()
+=item B<do_it()>
 
 Run the services discovery. 
 
@@ -109,14 +124,25 @@ sub do_it {
         # if services enumeration worked, try to find all instances of each service
         if(@services) {
             for my $service (@services) {
-                $self->discover_service($service->name, $service->protocol, $domain)
+                $self->discover_service($service->service, $service->protocol, $domain)
             }
         
         # if it failed, try to find common services
         } else {
-            $self->discover_service('afpovertcp', 'tcp', $domain);  # afpovertcp shares
+            $self->discover_service('afpovertcp', 'tcp', $domain);  # AFP over TCP shares
             $self->discover_service('ipp',        'tcp', $domain);  # CUPS servers
+            $self->discover_service('presence',   'tcp', $domain);  # iChat nodes
             $self->discover_service('printer',    'tcp', $domain);  # printing servers
+            $self->discover_service('workstation','tcp', $domain);  # workgroup manager
+        }
+    }
+    
+    # group services
+    for my $host ($self->get_interfaces) {
+        for my $service (@{$host->{services}}) {
+            my $name = $service->{name};
+            $self->{servicelist}{$name}{name} ||= $name;
+            push @{$self->{servicelist}{$name}{hosts}}, $host
         }
     }
     
@@ -124,7 +150,15 @@ sub do_it {
     return $self->get_interfaces
 }
 
-=item discover_service()
+=item B<get_services()>
+
+Returns the list of discovered services. 
+
+=cut
+
+sub get_services { return values %{$_[0]->{servicelist}} }
+
+=item B<discover_service()>
 
 Discover instances of a given service. 
 
@@ -133,6 +167,7 @@ Discover instances of a given service.
 sub discover_service {
     my $self = shift;
     my($service,$protocol,$domain) = @_;
+    #printf STDERR ">>> discover_service(): args=(%s)\n", join ', ', map{Dumper($_)}@_;
     
     my $rsrc = new Net::Rendezvous;
     $rsrc->application($service, $protocol);
@@ -151,13 +186,13 @@ sub discover_service {
         $self->add_interface({
             ip => $entry->address, nodename => $entry->name, services => [{
                 name => $service, port => $entry->port, protocol => $protocol, 
-                fqdn => $entry->fqdn, attrs => { $entry->all_attrs }
+                fqdn => $entry->fqdn, attrs => { map {decode('utf-8',$_)} $entry->all_attrs }
             }]
         })
     }
 }
 
-=item domain()
+=item B<domain()>
 
 Add domains to the search list.
 
@@ -181,13 +216,6 @@ sub domain {
 
 =back
 
-=head1 CAVEATS
-
-Note that if you are using C<Net::Rendezvous> 0.86 or any previous version, you 
-won't find services as easily because it was lacking services enumeration. 
-Until a new version of C<Net::Rendezvous> is released, you can apply the patch 
-available at L<https://rt.cpan.org/Ticket/Display.html?id=7940>
-
 =head1 SEE ALSO
 
 L<NetworkInfo::Discovery>, L<Net::Rendezvous>
@@ -200,12 +228,13 @@ SE<eacute>bastien Aperghis-Tramoni, E<lt>sebastien@aperghis.netE<gt>
 
 Please report any bugs or feature requests to
 C<bug-networkinfo-discovery-rendezvous@rt.cpan.org>, or through the web interface at
-L<https://rt.cpan.org/>.  I will be notified, and then you'll automatically
-be notified of progress on your bug as I make changes.
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=NetworkInfo-Discovery-Rendezvous>. 
+I will be notified, and then you'll automatically be notified of progress on 
+your bug as I make changes.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2004 SE<eacute>bastien Aperghis-Tramoni, All Rights Reserved.
+Copyright 2004-2006 SE<eacute>bastien Aperghis-Tramoni, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

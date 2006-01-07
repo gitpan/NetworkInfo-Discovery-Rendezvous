@@ -1,11 +1,15 @@
 Revision history for NetworkInfo-Discovery-Rendezvous
 
+0.06	2006.01.07
+        [BUGFIX] Net::Rendezvous API wasn't correctly used. 
+        [API] Added the get_services() method.
+
 0.05    2005.04.03
         [TESTS] Updated t/20rendezvous.t
         [TESTS] Corrected t/01api.t
 
 0.04    2004.12.30
-        [NEW] Updated to follow Net::Rendezvous 0.90 API. 
+        [CODE] Updated to follow Net::Rendezvous 0.90 API. 
         [TESTS] Added t/00prereq.t
 
 0.03    2004.11.16
